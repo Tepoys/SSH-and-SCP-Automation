@@ -1,7 +1,15 @@
 #include "Translate.h"
 
+
+/*
+*   KeyCodeToChar and charToKeyCode is from https://stackoverflow.com/questions/1918841/how-to-convert-ascii-character-to-cgkeycode
+*   writen by Michael https://stackoverflow.com/users/217476/michael
+*/
+
+//------------------------------------------//
+
 //changes CGKeycode to char
-char keyCodeToChar(CGKeyCode keyCode, UInt32 modifiers) {
+char Translate::keyCodeToChar(CGKeyCode keyCode, UInt32 modifiers) {
     TISInputSourceRef currentKeyboard = TISCopyCurrentKeyboardLayoutInputSource();
     CFDataRef layoutData = (CFDataRef)TISGetInputSourceProperty(currentKeyboard, kTISPropertyUnicodeKeyLayoutData);
     const UCKeyboardLayout *keyboardLayout = (const UCKeyboardLayout *)CFDataGetBytePtr(layoutData);
@@ -30,7 +38,7 @@ char keyCodeToChar(CGKeyCode keyCode, UInt32 modifiers) {
 
     return 0;
 }
-CGKeyCode charToKeyCode(char c) {
+CGKeyCode Translate::charToKeyCode(char c) {
     for (CGKeyCode keyCode = 0; keyCode < 128; ++keyCode) {
         char result = keyCodeToChar(keyCode, 0);
         if (result == c) {
@@ -38,4 +46,14 @@ CGKeyCode charToKeyCode(char c) {
         }
     }
     return -1; // Not found
+}
+
+//------------------------------------------//
+
+formula Translate::toCharWrapper(char c){
+    if(KEY_EQUIVELENCE_LOOKUP.find(c) == KEY_EQUIVELENCE_LOOKUP.end()){
+        return formula(charToKeyCode(c), false)
+    } else {
+        return formula(charToKeyCode(KEY_EQUIVELENCE_LOOKUP[c]), true);
+    }
 }
