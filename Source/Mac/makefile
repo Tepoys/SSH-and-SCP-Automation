@@ -1,8 +1,11 @@
-CXX = clang++
-CXXFLAGS = -Wall -g -std=c++11 -stdlib=libc++ -framework CoreFoundation -framework Carbon
+CXX = g++
+CXXFLAGS = -Wall -g -std=c++23 -stdlib=libc++ -Wc++11-extensions -framework CoreFoundation -framework Carbon
 
-Test: Test.cpp
-	$(CXX) $(CXXFLAGS) -o test Test.cpp
+driver: Driver.cpp Automation.o Translate.o
+	$(CXX) $(CXXFLAGS) Automation.o Translate.o Driver.cpp -o driver
 
-auto Auto: Automation.cpp
-	$(CXX) $(CXXFLAGS) -o auto Automation.cpp
+Automation.o: Automation.cpp Automation.h Translate.o
+	$(CXX) $(CXXFLAGS) -c Automation.cpp
+
+Translate.o: Translate.h Translate.cpp
+	$(CXX) $(CXXFLAGS) -c Translate.cpp

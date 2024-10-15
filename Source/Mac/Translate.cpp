@@ -9,7 +9,7 @@
 //------------------------------------------//
 
 //changes CGKeycode to char
-char Translate::keyCodeToChar(CGKeyCode keyCode, UInt32 modifiers) {
+char keyCodeToChar(CGKeyCode keyCode, UInt32 modifiers) {
     TISInputSourceRef currentKeyboard = TISCopyCurrentKeyboardLayoutInputSource();
     CFDataRef layoutData = (CFDataRef)TISGetInputSourceProperty(currentKeyboard, kTISPropertyUnicodeKeyLayoutData);
     const UCKeyboardLayout *keyboardLayout = (const UCKeyboardLayout *)CFDataGetBytePtr(layoutData);
@@ -38,7 +38,7 @@ char Translate::keyCodeToChar(CGKeyCode keyCode, UInt32 modifiers) {
 
     return 0;
 }
-CGKeyCode Translate::charToKeyCode(char c) {
+CGKeyCode charToKeyCode(char c) {
     for (CGKeyCode keyCode = 0; keyCode < 128; ++keyCode) {
         char result = keyCodeToChar(keyCode, 0);
         if (result == c) {
@@ -50,10 +50,10 @@ CGKeyCode Translate::charToKeyCode(char c) {
 
 //------------------------------------------//
 
-formula Translate::toCharWrapper(char c){
+Formula toCharWrapper(char c){
     if(KEY_EQUIVELENCE_LOOKUP.find(c) == KEY_EQUIVELENCE_LOOKUP.end()){
-        return formula(charToKeyCode(c), false)
+        return Formula(charToKeyCode(c), false);
     } else {
-        return formula(charToKeyCode(KEY_EQUIVELENCE_LOOKUP[c]), true);
+        return Formula(charToKeyCode(KEY_EQUIVELENCE_LOOKUP[c]), true);
     }
 }

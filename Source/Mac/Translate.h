@@ -1,16 +1,20 @@
 #ifndef TRANSLATE_H
 #define TRANSLATE_H
 
+
+#include <iostream>
 #include <map>
+#include <tuple>
 #include <CoreFoundation/CoreFoundation.h>
 #include <Carbon/Carbon.h>
+
 
 using namespace std;
 
 /// @brief Keycode and boolean for if shift needs to be pressed
-typedef tuple<CGKeyCode, bool> formula;
+typedef std::tuple<CGKeyCode, bool> Formula;
 
-static const map<char, char> KEY_EQUIVELENCE_LOOKUP = {
+static map<char, char> KEY_EQUIVELENCE_LOOKUP = {
     { '~', '`' },
     { '!', '1' },
     { '@', '2' },
@@ -46,6 +50,6 @@ CGKeyCode charToKeyCode(char c);
 /// @brief Changes character to formula
 /// @param c character to convert
 /// @return Tuple of CGKeyCode and bool, bool is for if shift needs to be pressed
-formula toCharWrapper(char c);
+Formula toCharWrapper(char c);
 
 #endif
