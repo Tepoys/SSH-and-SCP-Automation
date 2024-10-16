@@ -24,6 +24,7 @@ class Automation {
         Automation();
         void Menu();
     private:
+        string AuthPrompt();
         int Login(command cmd);
         int SSH();
         int SCP();
