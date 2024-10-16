@@ -7,6 +7,11 @@
 
 using namespace std;
 
+static int callback(void *count, int argc, char **argv, char **azColName);
+
+const string GET_DATA = "SELECT USERNAME, SERVERADRESS, PASSWORD "
+                        "FROM DATA;";
+
 class Config {
     public:
         /// @brief Config - Overloaded Constructor - Initializes an Config object from data from a PATH
@@ -24,6 +29,9 @@ class Config {
         void SetUsername();
         void SetServerAdress();
         void SetPassword();
+        void UploadUsername();
+        void UploadServerAdress();
+        void UploadPassword();
         void SetValues();
         void PullValues();
         string m_username;

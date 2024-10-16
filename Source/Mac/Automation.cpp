@@ -14,7 +14,7 @@ void Automation::Menu(){
 
         while(!valid){
 
-            cout << "SSH and SCP auto login\nWhat would you like to do?" << endl;
+            cout << "\nSSH and SCP auto login\nWhat would you like to do?" << endl;
             cout << "1. SSH" << endl;
             cout << "2. SCP" << endl;
             cout << "3. Configure" << endl;
@@ -41,6 +41,9 @@ void Automation::Menu(){
             case 4:
                 reprompt = false;
                 break;
+            case 6:
+                InputString("Hello world!");
+                break;
             default:
                 cout << "Invalid choice" << endl;
                 break;
@@ -51,7 +54,7 @@ void Automation::Menu(){
 
 int Automation::Login(command cmd){ 
     cout << "Dont tab out during this process\nPress enter to acknowledge" << endl;
-    pause();
+    cin.ignore();
 
     //open pipe and checks for success
     int p[2];
@@ -85,7 +88,8 @@ int Automation::Login(command cmd){
         exit(-1);
     } else {
         //parent
-        usleep(50);
+        usleep(1500*1000);
+        cout << "Enter password: " << m_config.GetPassword() << endl;
         InputString(m_config.GetPassword());
         wait(nullptr);
         cout << "Child has finished running" << endl;
@@ -114,7 +118,8 @@ void Automation::PressKey(Formula form) {
     CGEventPost(kCGHIDEventTap, press);
 
     // Small delay to mimic a real key press (optional)
-    usleep(1000); // 1 ms delay
+    //usleep(1000); // 1 ms delay
+    sleep(1);
 
     // Post keyboard release event
     CGEventPost(kCGHIDEventTap, release);
@@ -133,6 +138,8 @@ void Automation::PressKey(Formula form) {
 
 void Automation::InputString(string str){
     for(int i = 0; i < str.length(); i++){
+        cout << "Pressed key: " << str[i]  << " After wrapper: " << toCharWrapper(str[i]) << endl;
+
         PressKey(toCharWrapper(str[i]));
     }
 }
