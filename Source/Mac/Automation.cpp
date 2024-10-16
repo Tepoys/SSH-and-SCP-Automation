@@ -1,6 +1,5 @@
 #include "Automation.h"
 
-
 Automation::Automation(): m_config(Config("")){
 }
 
@@ -42,6 +41,7 @@ int Automation::Login(command cmd){
         //parent
         usleep(50);
         InputString(m_config.GetPassword());
+        return 0;
     }
 
 }
@@ -54,16 +54,16 @@ void Automation::PressKey(Formula form) {
     CGEventRef press = CGEventCreateKeyboardEvent(src, std::get<0>(form), true);
 
     // Create a new keyboard key release event
-    CGEventRef release = CGEventCreateKeyboardEvent(src, get<0>(form), false);
+    CGEventRef release = CGEventCreateKeyboardEvent(src, std::get<0>(form), false);
 
-    if(form)
+    //if(form)
 
 
     // Post keyboard press event
     CGEventPost(kCGHIDEventTap, press);
 
     // Small delay to mimic a real key press (optional)
-    usleep(50); // 1 ms delay
+    usleep(1000); // 1 ms delay
 
     // Post keyboard release event
     CGEventPost(kCGHIDEventTap, release);

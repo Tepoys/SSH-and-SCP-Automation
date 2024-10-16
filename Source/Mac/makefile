@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -g -std=c++23 -stdlib=libc++ -Wc++11-extensions -framework CoreFoundation -framework Carbon
+CXXFLAGS = -Wall -g -std=c++17 -stdlib=libc++ -Wc++17-extensions -framework CoreFoundation -framework Carbon
 
 driver: Driver.cpp Automation.o Translate.o
 	$(CXX) $(CXXFLAGS) Automation.o Translate.o Driver.cpp -o driver

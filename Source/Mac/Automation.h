@@ -7,6 +7,7 @@
 
 #include "Translate.h"
 #include "Config.h"
+
 using namespace std;
 
 const string DATABASE_PATH = "";
