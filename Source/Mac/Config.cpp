@@ -1,12 +1,16 @@
 #include "Config.h"
 
 Config::Config(const string PATH){
-    int quit = sqlite3_open(PATH.c_str(), &m_db); 
+    cout << "SQL Path: " << PATH << endl;
+
+    int quit = sqlite3_open(PATH.c_str(), &m_db);
+    cout << "Quit :" << quit << endl;
+    cout << m_db << endl;
     if(quit) { 
         std::cerr << "Error open DB " << sqlite3_errmsg(m_db) << std::endl; 
         exit(-1); 
     }
-    
+    PullValues();
 }
 
 void Config::Menu(){
@@ -44,6 +48,9 @@ void Config::Menu(){
                 cout << "Username: " << m_username << endl;
                 cout << "Server Adress: " << m_serverAdress << endl;
                 cout << "Password not displayed for security reasons." << endl;
+                break;
+            case 5:
+                reprompt = false;
                 break;
             default:
                 cout << "Invalid choice" << endl;
@@ -86,6 +93,17 @@ void Config::SetServerAdress(){
 void Config::SetPassword(){
     cout << "Enter Password: ";
     cin >> m_password;
+}
+
+string Config::GetPassword(){
+    return m_password;
+}
+string Config::GetUsername(){
+    return m_username;
+}
+
+string Config::GetServerAdress(){
+    return m_serverAdress;
 }
 
 void Config::SetValues(){

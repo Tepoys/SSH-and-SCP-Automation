@@ -10,7 +10,7 @@
 
 using namespace std;
 
-const string DATABASE_PATH = "";
+const string DATABASE_PATH = "data.sqlite3";
 const int msKeystroke = 50;
 
 enum command {

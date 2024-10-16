@@ -52,9 +52,9 @@ CGKeyCode charToKeyCode(char c) {
 
 Formula toCharWrapper(char c){
     
-    if(KEY_EQUIVELENCE_LOOKUP.find(c) == KEY_EQUIVELENCE_LOOKUP.end()){
+    if(getKeyEquivalenceLookup().find(c) == getKeyEquivalenceLookup().end()){
         return std::make_tuple(charToKeyCode(c), false);
     } else {
-        return std::make_tuple(charToKeyCode(KEY_EQUIVELENCE_LOOKUP[c]), true);
+        return std::make_tuple(charToKeyCode(getKeyEquivalenceLookup()[c]), true);
     }
 }

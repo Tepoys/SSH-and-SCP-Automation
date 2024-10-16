@@ -2,7 +2,8 @@
 #define CONFIG_H
 
 #include <iostream>
-#include <sqlite3.h> 
+#include <sqlite3.h>
+//#include "sqlite3.c"
 
 using namespace std;
 

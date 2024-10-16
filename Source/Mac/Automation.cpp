@@ -1,6 +1,6 @@
 #include "Automation.h"
 
-Automation::Automation(): m_config(Config("")){
+Automation::Automation(): m_config(Config(DATABASE_PATH)) {
 }
 
 void Automation::Menu(){
