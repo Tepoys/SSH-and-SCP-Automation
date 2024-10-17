@@ -1,7 +1,7 @@
 #include "Config.h"
 
 Config::Config(const string PATH){
-    cout << "SQL Path: " << PATH << endl;
+    cout << "Attempting to open sql database at: " << PATH << endl;
 
     int quit = sqlite3_open(PATH.c_str(), &m_db);
     cout << "Quit :" << quit << endl;
@@ -22,8 +22,8 @@ void Config::Menu(){
 
         while(!valid){
             //print options
-            cout << "Configuration Menu" << endl;
-            cout << "\n0. Set All Values" << endl;
+            cout << "\nConfiguration Menu" << endl;
+            cout << "0. Set All Values" << endl;
             cout << "1. Set Username" << endl;
             cout << "2. Set Server Adress" << endl;
             cout << "3. Set Password" << endl;
