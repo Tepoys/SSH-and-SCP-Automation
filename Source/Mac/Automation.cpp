@@ -46,9 +46,6 @@ void Automation::Menu(){
             case 4:
                 reprompt = false;
                 break;
-            case 6:
-                InputString("Hello world!");
-                break;
             default:
                 cout << "Invalid choice" << endl;
                 break;
@@ -57,8 +54,16 @@ void Automation::Menu(){
     
 }
 
+string Automation::AuthPrompt(){
+    string auth;
+    cout << "Enter auth token: ";
+    cin >> auth;
+    return auth;
+}
+
 int Automation::Login(command cmd){ 
-    cout << "Dont tab out during this process\nPress enter to acknowledge" << endl;
+    string auth = AuthPrompt();
+    cout << "Dont tab out during this process and dont touch the keyboard untill you are logged in" << endl;
     cin.ignore();
 
     //open pipe and checks for success
@@ -93,9 +98,15 @@ int Automation::Login(command cmd){
         exit(-1);
     } else {
         //parent
-        usleep(1500*1000);
+        usleep(200*1000);
         cout << "Enter password: " << m_config.GetPassword() << endl;
         InputString(m_config.GetPassword());
+        PressKey(std::make_tuple(52, false));
+        usleep(1100*1000);
+        InputString(auth);
+        PressKey(std::make_tuple(52, false));
+        InputString("auth");
+
         wait(nullptr);
         cout << "Child has finished running" << endl;
         return 0;
@@ -112,6 +123,9 @@ void Automation::PressKey(Formula form) {
 
     // Create a new keyboard key release event
     CGEventRef release = CGEventCreateKeyboardEvent(src, std::get<0>(form), false);
+    
+    //cout << "Keycode: " << std::get<0>(form) << endl;
+    //cout << "Shift: " << std::get<1>(form) << endl;
 
     // if shift needed
     if(std::get<1>(form)){
@@ -123,8 +137,8 @@ void Automation::PressKey(Formula form) {
     CGEventPost(kCGHIDEventTap, press);
 
     // Small delay to mimic a real key press (optional)
-    //usleep(1000); // 1 ms delay
-    sleep(1);
+    //usleep(100*1000); // 1 ms delay
+    //sleep(1);
 
     // Post keyboard release event
     CGEventPost(kCGHIDEventTap, release);
@@ -132,7 +146,8 @@ void Automation::PressKey(Formula form) {
     // unpress shift
     if(std::get<1>(form)){
         // Release shift key
-        CGEventSetFlags(release, kCGEventFlagMaskShift);
+        CGEventRef shiftKeyUp = CGEventCreateKeyboardEvent(src, (CGKeyCode)56, false);
+        CFRelease(shiftKeyUp);
     }
 
     // Release the events and source
