@@ -4,8 +4,8 @@ Config::Config(const string PATH){
     cout << "Attempting to open sql database at: " << PATH << endl;
 
     int quit = sqlite3_open(PATH.c_str(), &m_db);
-    cout << "Quit :" << quit << endl;
-    cout << m_db << endl;
+    //cout << "Quit :" << quit << endl;
+    //cout << m_db << endl;
     if(quit) { 
         std::cerr << "Error open DB " << sqlite3_errmsg(m_db) << std::endl; 
         exit(-1); 
