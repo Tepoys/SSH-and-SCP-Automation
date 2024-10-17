@@ -51,10 +51,17 @@ CGKeyCode charToKeyCode(char c) {
 //------------------------------------------//
 
 Formula toCharWrapper(char c){
-    
-    if(getKeyEquivalenceLookup().find(c) == getKeyEquivalenceLookup().end()){
-        return std::make_tuple(charToKeyCode(c), false);
-    } else {
-        return std::make_tuple(charToKeyCode(getKeyEquivalenceLookup()[c]), true);
+    map<char, char> map = getKeyEquivalenceLookup();
+    if(map.find(c) == map.end()){
+        if(isupper(c)){
+            // cout << "Found" << endl;
+            return std::make_tuple(charToKeyCode(tolower(c)), true);
+        } else {
+            // cout << "Not Found" << endl;
+            return std::make_tuple(charToKeyCode(c), false);
+        }
+    } else{
+        // cout << "Found" << endl;
+        return std::make_tuple(charToKeyCode(map[c]), true);
     }
 }

@@ -21,6 +21,8 @@ void Config::Menu(){
         bool valid = false;
 
         while(!valid){
+            //print options
+            cout << "Configuration Menu" << endl;
             cout << "\n0. Set All Values" << endl;
             cout << "1. Set Username" << endl;
             cout << "2. Set Server Adress" << endl;
@@ -28,13 +30,19 @@ void Config::Menu(){
             cout << "4. Display Values" << endl;
             cout << "5. Exit" << endl;
             cout << "Enter choice: ";
-            try{
-                cin >> choice;
-                valid = true;
-            } catch(...){
+
+            //input validation
+            bool err = !(cin >> choice);
+            valid = true;
+            if(err){
+                cin.clear();
+                valid = false;
                 cout << "Invalid input" << endl;
             }
+            cin.ignore(std::numeric_limits<streamsize>::max(),'\n');
         }
+
+        //cases
         switch(choice){
             case 0:
                 SetValues();

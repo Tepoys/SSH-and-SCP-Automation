@@ -13,21 +13,26 @@ void Automation::Menu(){
         
 
         while(!valid){
-
+            // this is a mess, prob going to rewrite
             cout << "\nSSH and SCP auto login\nWhat would you like to do?" << endl;
             cout << "1. SSH" << endl;
             cout << "2. SCP" << endl;
             cout << "3. Configure" << endl;
             cout << "4. Exit" << endl;
             cout << "Enter choice: ";
-            try{
-                cin >> choice;
+            
+            // input validation
+            bool err = !(cin >> choice);
                 valid = true;
-            } catch(...){
-                cout << "Invalid input" << endl;
-            }
+                if(err){
+                    cin.clear();
+                    valid = false;
+                    cout << "Invalid input" << endl;
+                }
+                cin.ignore(std::numeric_limits<streamsize>::max(),'\n');
         }
 
+        // cases
         switch(choice){
             case 1:
                 Login(command::SSH);
@@ -138,7 +143,7 @@ void Automation::PressKey(Formula form) {
 
 void Automation::InputString(string str){
     for(int i = 0; i < str.length(); i++){
-        cout << "Pressed key: " << str[i]  << " After wrapper: " << toCharWrapper(str[i]) << endl;
+        //cout << "Pressed key: " << str[i]  << " After wrapper: " << std::get<0>(toCharWrapper(str[i])) << endl;
 
         PressKey(toCharWrapper(str[i]));
     }
