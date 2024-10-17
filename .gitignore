@@ -40,9 +40,12 @@ sqlite3.c
 sqlite3.h
 sqlite3ext.h
 
+# SQLite Databse
 *.sqlite3
 
+# Driver Program
 driver
 
+# CMake files
 *.dSYM
 .*
