@@ -1,6 +1,30 @@
 #include "Automation.h"
 
-Automation::Automation(): m_config(Config(DATABASE_PATH)) {
+char** vecToCharArr(std::vector<std::string> vec);
+std::vector<std::string> split(const std::string& s, const std::string& delimiter);
+
+ 
+
+
+Automation::Automation() {
+    char path[PATH_MAX];
+    uint32_t size = sizeof(path);
+    if (_NSGetExecutablePath(path, &size) != 0) {
+        std::cerr << "Buffer too small; needed size: " << size << std::endl;
+        exit(-1);
+    }
+    char realPath[PATH_MAX];
+    realpath(path, realPath);
+    string stringPath = string(realPath);
+    uint32_t lastDelim = stringPath.find_last_of("/");
+
+
+    string fullPath = stringPath.substr(0, lastDelim+1) + DATABASE_PATH;
+    m_config = new Config(fullPath);
+}
+
+Automation::~Automation(){
+    delete m_config;
 }
 
 void Automation::Menu(){
@@ -41,7 +65,7 @@ void Automation::Menu(){
                 Login(command::SCP);
                 break;
             case 3:
-                m_config.Menu();
+                m_config->Menu();
                 break;
             case 4:
                 reprompt = false;
@@ -56,12 +80,56 @@ void Automation::Menu(){
 
 string Automation::AuthPrompt(){
     string auth;
-    cout << "Enter auth token: ";
+    cout << "Enter auth token (or 1 for duo push): ";
     cin >> auth;
     return auth;
 }
 
-int Automation::Login(command cmd){ 
+int Automation::Login(command cmd){
+    string fullCommand = "";
+    if(cmd == command::SCP){
+        string from = "", to = "", additional = "";
+        string custom = "";
+        int choice = 0;
+        while(cout << "\nPick An Option\n1. Downloading file\n2. Uploading file\n3. Custom scp command\n" && !(cin >> choice) && (choice != 1 && choice != 2 && choice != 3)){
+            cin.clear();
+            cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid input" << endl;
+        }
+        cin.ignore();
+        if(choice != 3){
+            int slashR = 0;
+            cout << "Include -r?\n";
+            cout << "0.No\n1.Yes\n";
+            cin >> slashR;
+            cin.clear();
+            cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
+            fullCommand += slashR ? "-r " : "";
+        }
+
+        switch(choice){
+            case 1:
+                cout << "Enter source folder (remote):";
+                cin >> from;
+                cout << "Enter destination path (local):";
+                cin >> to;
+                fullCommand += m_config->GetUsername() + "@" + m_config->GetServerAdress() + ":" + from + " " + to;
+                break;
+            case 2:
+                cout << "Enter file path to upload (local):";
+                cin >> from;
+                cout << "Enter destination path (remote):";
+                cin >> to;
+                fullCommand += from + " " + m_config->GetUsername() + "@" + m_config->GetServerAdress() + ":" + to;
+                break;
+            case 3:
+                cout << "Enter custom command (only arguments after scp):";
+                cin >> custom;
+                fullCommand = custom;
+                break;
+        }
+    }
+
     string auth = AuthPrompt();
     cout << "Dont tab out during this process and dont touch the keyboard untill you are logged in" << endl;
     cin.ignore();
@@ -85,11 +153,14 @@ int Automation::Login(command cmd){
 
         //calls command
         switch(cmd){
-            case command::SSH:
-                execlp("ssh", "ssh", "-t", "bliao1@gl.umbc.edu",(char *) NULL); 
+            case command::SSH:{
+                string dest = m_config->GetUsername() + "@" + m_config->GetServerAdress();
+                execlp("ssh", "ssh", "-t", dest.c_str(),(char *) NULL); 
                 break;
+            }
             case command::SCP:
-                execlp("scp", "scp", (char *) NULL);
+                cout << "Running command: " << fullCommand << endl;
+                execvp("scp", vecToCharArr(split(fullCommand, " ")));
                 break;
         }
 
@@ -99,13 +170,13 @@ int Automation::Login(command cmd){
     } else {
         //parent
         usleep(200*1000);
-        cout << "Enter password: " << m_config.GetPassword() << endl;
-        InputString(m_config.GetPassword());
+        //cout << "Enter password: " << m_config->GetPassword() << endl;
+        InputString(m_config->GetPassword());
         PressKey(std::make_tuple(52, false));
         usleep(1100*1000);
         InputString(auth);
         PressKey(std::make_tuple(52, false));
-        InputString("auth");
+        //InputString("auth");
 
         wait(nullptr);
         cout << "Child has finished running" << endl;
@@ -113,6 +184,39 @@ int Automation::Login(command cmd){
     }
 
 }
+
+// split string
+std::vector<std::string> split(const std::string& s, const std::string& delimiter) {
+    std::vector<std::string> tokens;
+    size_t pos = 0;
+    std::string token;
+    std::string str = s; 
+    while ((pos = str.find(delimiter)) != std::string::npos) {
+        token = str.substr(0, pos);
+        tokens.push_back(token);
+        str.erase(0, pos + delimiter.length());
+    }
+    tokens.push_back(str);
+
+    return tokens;
+}
+
+// convert string vector to null terminated char array with scp at the front
+char** vecToCharArr(std::vector<std::string> vec){
+    char** arr = new char*[vec.size() + 2];
+    arr[0] = new char[4];
+    strcpy(arr[0], "scp");
+    for(size_t i = 1; i < vec.size() + 1; i++){
+        arr[i] = new char[vec[i - 1].length() + 1];
+        strcpy(arr[i], vec[i - 1].c_str());
+    }
+    arr[vec.size() + 1] = nullptr;
+    for(size_t i = 0; i < vec.size() + 1; i++){
+        cout << arr[i] << endl;
+    }
+    return arr;
+}
+
 
 void Automation::PressKey(Formula form) {
     // Create an HID hardware event source

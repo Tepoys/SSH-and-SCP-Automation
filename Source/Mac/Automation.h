@@ -1,6 +1,10 @@
 #ifndef AUTOMATION_H
 #define AUTOMATION_H
 
+
+#include <mach-o/dyld.h>
+#include <limits.h>
+#include <vector>
 #include <string>
 #include <unistd.h>
 #include <chrono>
@@ -22,6 +26,7 @@ class Automation {
     public:
         /// @brief default constructor
         Automation();
+        ~Automation();
         void Menu();
     private:
         string AuthPrompt();
@@ -30,7 +35,7 @@ class Automation {
         int SCP();
         void PressKey(Formula form);
         void InputString(string str);
-        Config m_config;
+        Config *m_config;
 };
 
 #endif
